@@ -1,0 +1,16 @@
+syntax = "proto3";
+package user;
+
+message UserResponseGrpc {
+  int32 id = 1;
+  string name = 2;
+  string phone = 3;
+}
+
+service User {
+  rpc GetUser(GetUserByTokenGrpc) returns (UserResponseGrpc) {}
+  rpc GetUserById(GetUserByIdGrpc) returns (UserResponseGrpc) {}
+}
+
+message GetUserByTokenGrpc { string token = 1; }
+message GetUserByIdGrpc { int32 Id = 1; }

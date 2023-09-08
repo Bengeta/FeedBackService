@@ -1,0 +1,27 @@
+version: '3.8'
+networks:
+  backend:
+    driver: bridge
+
+services:
+  feedback-api:
+    container_name: feedback-api
+    image: feedback-image
+    env_file:
+      - .env
+    environment:
+      DB_HOST: '${DB_FEEDBACK_HOST}'
+      ASPNETCORE_ENVIRONMENT: Production
+    ports:
+      - "5270:5270"
+      - "5271:5271"
+    depends_on:
+      - feedback-db
+    networks:
+      - backend
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:5271/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

@@ -1,0 +1,47 @@
+name: Deploy Feedback to Server
+
+on:
+  push:
+    branches:
+      - hess
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      keylink: ${{ secrets.KEYLINK }}
+      hostname: ${{ secrets.HOSTNAME }}
+      ssh_port: ${{ secrets.SSH_PORT }}
+      appsettings: ${{ secrets.FEEDBACK_APPSET }}
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Download App Settings
+      run: wget -O ./FeedbackService/data/appsettings.json "$appsettings"
+
+    - name: Build Docker Image
+      run: docker build -t feedback-image ./FeedbackService/
+    
+    - name: Save Image as Tar File
+      run: docker save feedback-image -o image.tar
+          
+    - name: Download SSH key
+      run:
+          wget -O k.key "$keylink";chmod 400 k.key
+    
+    - name: Deploy to Server
+      run: 
+        rsync -ratlz --rsh="ssh -i k.key -o StrictHostKeyChecking=no -l ubuntu -p $ssh_port" image.tar ubuntu@$hostname:/tmp
+        
+        
+    - name: Deploy Docker Compose to Server
+      run: 
+          rsync -ratlz --rsh="ssh -i k.key -o StrictHostKeyChecking=no -l ubuntu -p $ssh_port" ./FeedbackService/docker-compose-feedback.yml ubuntu@$hostname:./docker-compose-feedback.yml
+
+    - name: Start FeedbackSercie
+      run:
+       sudo ssh -i k.key -o StrictHostKeyChecking=no ubuntu@$hostname -p $ssh_port 
+       "docker load -i /tmp/image.tar;
+        docker compose -f docker-compose-feedback.yml up -d;
+        yes | docker image prune &"
