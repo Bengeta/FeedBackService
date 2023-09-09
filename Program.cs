@@ -1,4 +1,5 @@
 using System.Net;
+using GrpcService.ServiceGet;
 using HessBackend.Middlewares;
 using Interfaces;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -34,6 +35,8 @@ services.AddSingleton<IMongoDatabase>(database);
 services.AddSingleton<IMessageRepository, MessageRepository>();
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<ServicesGrpc.ServiceSent.OrderService>();
+
+builder.Services.AddAutoMapper(typeof(AutoMappingProfiles).Assembly);
 
 builder.Services.AddControllers();
 builder.Services.AddControllersWithViews();
@@ -76,5 +79,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGrpcService<FeedbackService>();
 
 app.Run();

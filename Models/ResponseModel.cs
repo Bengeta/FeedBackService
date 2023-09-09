@@ -1,4 +1,4 @@
-using HessBackend.Enums;
+using Enums;
 
 namespace Models;
 

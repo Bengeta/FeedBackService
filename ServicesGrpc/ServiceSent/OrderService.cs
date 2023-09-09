@@ -1,7 +1,7 @@
 using Grpc.Net.Client;
 using Models;
 using OrderService;
-using HessBackend.Enums;
+using Enums;
 
 namespace ServicesGrpc.ServiceSent;
 public class OrderService

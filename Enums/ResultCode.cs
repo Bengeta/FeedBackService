@@ -1,4 +1,4 @@
-namespace HessBackend.Enums;
+namespace Enums;
 
 public enum ResultCode
 {

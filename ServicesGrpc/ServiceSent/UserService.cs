@@ -2,7 +2,7 @@ using Grpc.Core;
 using Grpc.Net.Client;
 using User;
 using Models;
-using HessBackend.Enums;
+using Enums;
 
 namespace ServicesGrpc.ServiceSent;
 

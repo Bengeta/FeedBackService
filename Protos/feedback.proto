@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package feedback;
+
+message PaginatedListMessageGrpc {
+  repeated MessageGrpc data = 1;
+  int32 currentPage = 2;
+  int32 countPage = 3;
+  bool isNext = 4;
+  bool isPrev = 5;
+}
+
+message MessageGrpc {
+  string Id = 1;
+  int64 UserId = 2;
+  string Message = 3;
+  string Answer = 4;
+}
+
+service FeedBack {
+  rpc GetMessage(GetMessageRequestGrpc) returns (GetMessageResponseGrpc);
+
+  rpc GetMessages(GetMessagesRequestGrpc) returns (GetMessagesResponseGrpc);
+
+  rpc AddAnswer(AddAnswerRequestGrpc) returns (AddAnswerResponseGrpc);
+}
+
+// The request message containing the user's name.
+message GetMessageRequestGrpc { string Id = 1; }
+
+message GetMessageResponseGrpc {
+  MessageGrpc response = 1;
+  bool success = 2;
+}
+
+message GetMessagesRequestGrpc {}
+
+message GetMessagesResponseGrpc {
+  PaginatedListMessageGrpc response = 1;
+  bool success = 2;
+}
+
+message AddAnswerRequestGrpc {
+  string Id = 1;
+  string Answer = 2;
+}
+
+message AddAnswerResponseGrpc { bool success = 1; }
