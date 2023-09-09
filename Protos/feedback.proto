@@ -33,7 +33,10 @@ message GetMessageResponseGrpc {
   bool success = 2;
 }
 
-message GetMessagesRequestGrpc {}
+message GetMessagesRequestGrpc {
+  int32 page = 1;
+  int32 pageSize = 2;
+}
 
 message GetMessagesResponseGrpc {
   PaginatedListMessageGrpc response = 1;

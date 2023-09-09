@@ -19,9 +19,9 @@ public class MessageController : BaseController
 
     [HttpGet]
     [Route("messages")]
-    public async Task<ResponseModel<PaginatedListModel<MessageResponse>>> GetMessages()
+    public async Task<ResponseModel<PaginatedListModel<MessageResponse>>> GetMessages([FromQuery(Name = "page")] int page, [FromQuery(Name = "pageSize")] int pageSize)
     {
-        return await _messageRepository.GetAllMessagesAsync(Token());
+        return await _messageRepository.GetAllMessagesAsync(Token(), page, pageSize);
     }
     [HttpGet]
     [Route("messages/{id}")]

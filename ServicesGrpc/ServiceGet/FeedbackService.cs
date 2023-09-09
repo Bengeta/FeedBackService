@@ -42,7 +42,7 @@ public class FeedbackService : FeedBack.FeedBackBase
     {
         try
         {
-            var response = await _messageRepository.GetAllMessagesAsync();
+            var response = await _messageRepository.GetAllMessagesAsync(request.Page, request.PageSize);
             if (response.ResultCode == ResultCode.Success)
                 return new GetMessagesResponseGrpc() { Success = true, Response = _mapper.Map<PaginatedListMessageGrpc>(response.Data) };
 

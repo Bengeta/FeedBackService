@@ -27,7 +27,7 @@ public class MessageRepository : IMessageRepository
         _MessagesCollection = database.GetCollection<MessageModel>("Messages");
     }
 
-    public async Task<ResponseModel<PaginatedListModel<MessageResponse>>> GetAllMessagesAsync(string token)
+    public async Task<ResponseModel<PaginatedListModel<MessageResponse>>> GetAllMessagesAsync(string token, int page = 0, int pageSize = 10)
     {
         try
         {
@@ -35,7 +35,7 @@ public class MessageRepository : IMessageRepository
             if (userResponse.ResultCode != ResultCode.Success)
                 return new ResponseModel<PaginatedListModel<MessageResponse>> { ResultCode = ResultCode.UserNotFound };
             var filter = Builders<MessageModel>.Filter.Eq(x => x.UserId, userResponse.Data.Id);
-            return await GetMessages(filter);
+            return await GetMessages(filter, page, pageSize);
         }
         catch (Exception e)
         {
@@ -43,12 +43,12 @@ public class MessageRepository : IMessageRepository
             return new ResponseModel<PaginatedListModel<MessageResponse>> { ResultCode = ResultCode.Failed };
         }
     }
-    public async Task<ResponseModel<PaginatedListModel<MessageResponse>>> GetAllMessagesAsync()
+    public async Task<ResponseModel<PaginatedListModel<MessageResponse>>> GetAllMessagesAsync(int page = 0, int pageSize = 10)
     {
         try
         {
             var filter = Builders<MessageModel>.Filter.Empty;
-            return await GetMessages(filter);
+            return await GetMessages(filter, page, pageSize);
         }
         catch (Exception e)
         {
