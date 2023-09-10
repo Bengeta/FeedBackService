@@ -15,6 +15,8 @@ message MessageGrpc {
   int64 UserId = 2;
   string Message = 3;
   string Answer = 4;
+  string CreatedAt = 5;
+  string Title = 6;
 }
 
 service FeedBack {

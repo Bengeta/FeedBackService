@@ -10,6 +10,7 @@ using Requests;
 using Responses;
 using AutoMapper;
 using Azure;
+using Feedback;
 
 namespace Repository;
 public class MessageRepository : IMessageRepository
@@ -24,7 +25,7 @@ public class MessageRepository : IMessageRepository
         _orderService = orderService;
         _userService = userService;
         _mapper = mapper;
-        _MessagesCollection = database.GetCollection<MessageModel>("Messages");
+        _MessagesCollection = database.GetCollection<MessageModel>("messages");
     }
 
     public async Task<ResponseModel<PaginatedListModel<MessageResponse>>> GetAllMessagesAsync(string token, int page = 0, int pageSize = 10)
@@ -139,9 +140,39 @@ public class MessageRepository : IMessageRepository
             var userResponse = await _userService.GetGetUserByToken(token);
             if (userResponse.ResultCode != ResultCode.Success)
                 return new ResponseModel<bool> { ResultCode = ResultCode.UserNotFound };
-            var MessageModel = new MessageModel { UserId = userResponse.Data.Id, Message = request.Message };
+            var MessageModel = new MessageModel { UserId = userResponse.Data.Id, Message = request.Message, Title = request.Title };
             await _MessagesCollection.InsertOneAsync(MessageModel);
             return new ResponseModel<bool> { ResultCode = ResultCode.Success, Data = true };
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return new ResponseModel<bool> { ResultCode = ResultCode.Failed };
+        }
+    }
+
+    public async Task<ResponseModel<bool>> UpdateMessageAsync(AddAnswerRequestGrpc request)
+    {
+        try
+        {
+            var messageResponse = await GetMessageAsync(request.Id);
+            if (messageResponse.ResultCode != ResultCode.Success)
+                return new ResponseModel<bool> { ResultCode = ResultCode.Failed };
+
+            var filter = Builders<MessageModel>.Filter.Eq(x => x.Id, request.Id);
+            var update = Builders<MessageModel>.Update.Set(x => x.Answer, request.Answer);
+
+            var result = await _MessagesCollection.UpdateOneAsync(filter, update);
+
+            if (result.IsAcknowledged && result.ModifiedCount > 0)
+            {
+                return new ResponseModel<bool> { ResultCode = ResultCode.Success, Data = true };
+            }
+            else
+            {
+                return new ResponseModel<bool> { ResultCode = ResultCode.Failed };
+            }
+
         }
         catch (Exception e)
         {

@@ -42,9 +42,13 @@ public class FeedbackService : FeedBack.FeedBackBase
     {
         try
         {
+            Console.WriteLine("Get Request to get messages");
             var response = await _messageRepository.GetAllMessagesAsync(request.Page, request.PageSize);
             if (response.ResultCode == ResultCode.Success)
+            {
+                Console.WriteLine("Get success " + response.Data.data.Count);
                 return new GetMessagesResponseGrpc() { Success = true, Response = _mapper.Map<PaginatedListMessageGrpc>(response.Data) };
+            }
 
             return new GetMessagesResponseGrpc() { Success = false };
         }
@@ -60,7 +64,8 @@ public class FeedbackService : FeedBack.FeedBackBase
     {
         try
         {
-            var response = await _messageRepository.GetAllMessagesAsync();
+
+            var response = await _messageRepository.UpdateMessageAsync(request);
             if (response.ResultCode == ResultCode.Success)
                 return new AddAnswerResponseGrpc() { Success = true};
 

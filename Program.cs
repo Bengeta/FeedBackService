@@ -26,7 +26,7 @@ builder.Configuration.AddJsonFile("data/appsettings.json");
 var connectionString = builder.Configuration.GetConnectionString("MainDB");
 builder.Services.AddGrpc();
 var client = new MongoClient(connectionString);
-var database = client.GetDatabase("MessageDB");
+var database = client.GetDatabase("FeedbackDB");
 
 // Регистрируем клиент и базу данных в сервисной коллекции
 var services = builder.Services;
@@ -71,7 +71,7 @@ app.UseSwaggerUI(options =>
         options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
             description.GroupName.ToUpperInvariant());
     }
-    options.RoutePrefix = "api/swagger_message";
+    options.RoutePrefix = "api/swagger_feedback";
 });
 
 app.UseHttpsRedirection();

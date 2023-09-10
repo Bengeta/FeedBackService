@@ -7,7 +7,10 @@ public class MessageModel
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; }
     public long UserId { get; set; }
-    public string Message { get; set; }
-    public string Answer { get; set; }
+    public string Title { get; set; } = "";
+    public string Message { get; set; } = "";
+    public string Answer { get; set; } = "";
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 }
+
 
