@@ -1,14 +1,14 @@
 using Grpc.Core;
 using Grpc.Net.Client;
 using User;
-using Models;
-using Enums;
+using HessLibrary.Models;
+using HessLibrary.Enums;
 
 namespace ServicesGrpc.ServiceSent;
 
 public class UserService
 {
-    private string host = "api";
+    private string host = "localhost";
     private string port = "5002";
     private string adress;
 

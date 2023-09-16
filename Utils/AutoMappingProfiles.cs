@@ -1,12 +1,12 @@
 using AutoMapper;
-using Models;
+using HessLibrary.Models;
 using Models.DBTables;
 using Responses;
 using Requests;
 using Feedback;
 
 
-namespace Utils
+namespace Feedback.Utils
 {
     public class AutoMappingProfiles : Profile
     {

@@ -1,6 +1,6 @@
 using AutoMapper;
 using Grpc.Core;
-using Enums;
+using HessLibrary.Enums;
 using Interfaces;
 using User;
 using Feedback;

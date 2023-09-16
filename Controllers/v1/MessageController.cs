@@ -1,6 +1,6 @@
 using Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Models;
+using HessLibrary.Models;
 using Models.DBTables;
 using Requests;
 using Responses;

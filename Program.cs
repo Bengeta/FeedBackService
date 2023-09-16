@@ -1,6 +1,7 @@
 using System.Net;
 using GrpcService.ServiceGet;
 using HessBackend.Middlewares;
+using HessLibrary.Utils;
 using Interfaces;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -36,7 +37,7 @@ services.AddSingleton<IMessageRepository, MessageRepository>();
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<ServicesGrpc.ServiceSent.OrderService>();
 
-builder.Services.AddAutoMapper(typeof(AutoMappingProfiles).Assembly);
+builder.Services.AddAutoMapper(typeof(Feedback.Utils.AutoMappingProfiles).Assembly);
 
 builder.Services.AddControllers();
 builder.Services.AddControllersWithViews();

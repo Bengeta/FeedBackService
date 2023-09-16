@@ -17,7 +17,7 @@
         <PackageReference Include="MongoDB.Driver" Version="2.19.1" />
         <PackageReference Include="NPOI" Version="2.6.0" />
         <PackageReference Include="RabbitMQ.Client" Version="6.5.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
         <PackageReference Include="Grpc.Net.Client" Version="2.52.0" />
         <PackageReference Include="Google.Protobuf" Version="3.22.1" />
         <PackageReference Include="Grpc.AspNetCore" Version="2.52.0" />
@@ -41,5 +41,12 @@
             <Link>.dockerignore</Link>
         </Content>
     </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="HessLibrary">
+            <HintPath>mylib/HessLibrary.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
 
 </Project>
