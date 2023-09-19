@@ -29,12 +29,6 @@
             Version="12.0.0" />
     </ItemGroup>
 
-    <ItemGroup>
-        <Protobuf Include="Protos\order.proto" GrpcServices="Client" />
-        <Protobuf Include="Protos\user.proto" GrpcServices="Client" />
-
-        <Protobuf Include="Protos\feedback.proto" GrpcServices="Server" />
-    </ItemGroup>
 
     <ItemGroup>
         <Content Include="..\.dockerignore">

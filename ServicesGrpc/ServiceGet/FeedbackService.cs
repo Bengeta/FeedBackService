@@ -1,9 +1,8 @@
 using AutoMapper;
 using Grpc.Core;
 using HessLibrary.Enums;
+using HessLibrary.FeedbackServiceGrpc;
 using Interfaces;
-using User;
-using Feedback;
 
 namespace GrpcService.ServiceGet;
 public class FeedbackService : FeedBack.FeedBackBase

@@ -1,4 +1,5 @@
 using Feedback;
+using HessLibrary.FeedbackServiceGrpc;
 using HessLibrary.Models;
 using Models.DBTables;
 using Requests;

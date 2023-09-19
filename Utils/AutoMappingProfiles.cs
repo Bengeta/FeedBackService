@@ -4,6 +4,7 @@ using Models.DBTables;
 using Responses;
 using Requests;
 using Feedback;
+using HessLibrary.FeedbackServiceGrpc;
 
 
 namespace Feedback.Utils

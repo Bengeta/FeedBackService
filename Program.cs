@@ -37,7 +37,7 @@ services.AddSingleton<IMessageRepository, MessageRepository>();
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<ServicesGrpc.ServiceSent.OrderService>();
 
-builder.Services.AddAutoMapper(typeof(Feedback.Utils.AutoMappingProfiles).Assembly);
+builder.Services.AddAutoMapper(typeof(Feedback.Utils.AutoMappingProfiles).Assembly, typeof(HessLibrary.Utils.AutoMappingProfiles).Assembly);
 
 builder.Services.AddControllers();
 builder.Services.AddControllersWithViews();

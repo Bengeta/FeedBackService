@@ -4,13 +4,11 @@ using HessLibrary.Models;
 using Models.DBTables;
 using Utils;
 using MongoDB.Driver;
-using MongoDB.Bson;
 using ServicesGrpc.ServiceSent;
 using Requests;
 using Responses;
 using AutoMapper;
-using Azure;
-using Feedback;
+using HessLibrary.FeedbackServiceGrpc;
 
 namespace Repository;
 public class MessageRepository : IMessageRepository

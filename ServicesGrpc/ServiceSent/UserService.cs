@@ -1,14 +1,14 @@
 using Grpc.Core;
 using Grpc.Net.Client;
-using User;
 using HessLibrary.Models;
 using HessLibrary.Enums;
+using HessLibrary.UserServiceGrpc;
 
 namespace ServicesGrpc.ServiceSent;
 
 public class UserService
 {
-    private string host = "localhost";
+    private string host = "api";
     private string port = "5002";
     private string adress;
 
@@ -22,9 +22,9 @@ public class UserService
         try
         {
             var channel = GrpcChannel.ForAddress(adress);
-            var client = new User.User.UserClient(channel);
+            var client = new User.UserClient(channel);
 
-            var call = await client.GetUserAsync(new User.GetUserByTokenGrpc { Token = token }
+            var call = await client.GetUserAsync(new GetUserByTokenGrpc { Token = token }
                 , deadline: DateTime.UtcNow.AddMinutes(1)
             );
             if (call != null)
@@ -48,9 +48,9 @@ public class UserService
         try
         {
             var channel = GrpcChannel.ForAddress(adress);
-            var client = new User.User.UserClient(channel);
+            var client = new User.UserClient(channel);
 
-            var call = await client.GetUserByIdAsync(new User.GetUserByIdGrpc { Id = id }
+            var call = await client.GetUserByIdAsync(new GetUserByIdGrpc { Id = id }
                 , deadline: DateTime.UtcNow.AddMinutes(1)
             );
             if (call != null)
