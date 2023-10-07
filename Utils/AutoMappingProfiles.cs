@@ -16,6 +16,7 @@ namespace Feedback.Utils
             CreateMap<AddMessageRequest, MessageModel>();
             CreateMap<MessageModel, MessageResponse>();
             CreateMap<MessageResponse, MessageGrpc>();
+            CreateMap<MessageModel, MessageGrpc>();
 
             CreateMap<PaginatedListModel<MessageResponse>, PaginatedListMessageGrpc>();
             

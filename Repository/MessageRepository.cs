@@ -9,6 +9,7 @@ using Requests;
 using Responses;
 using AutoMapper;
 using HessLibrary.FeedbackServiceGrpc;
+using HessLibrary.Interfaces;
 
 namespace Repository;
 public class MessageRepository : IMessageRepository
@@ -16,6 +17,7 @@ public class MessageRepository : IMessageRepository
     private readonly IMongoCollection<MessageModel> _MessagesCollection;
     private readonly ServicesGrpc.ServiceSent.OrderService _orderService;
     private readonly UserService _userService;
+    private readonly IRabbitMqService _rabbitMqService;
     private readonly IMapper _mapper;
 
     public MessageRepository(IMongoDatabase database, IMapper mapper, ServicesGrpc.ServiceSent.OrderService orderService, UserService userService)
@@ -157,13 +159,17 @@ public class MessageRepository : IMessageRepository
             if (messageResponse.ResultCode != ResultCode.Success)
                 return new ResponseModel<bool> { ResultCode = ResultCode.Failed };
 
-            var filter = Builders<MessageModel>.Filter.Eq(x => x.Id, request.Id);
+            var filter = Builders<MessageModel>.Filter.Eq(x => x.Id, request.Id);            
             var update = Builders<MessageModel>.Update.Set(x => x.Answer, request.Answer);
+
+            var document = await _MessagesCollection.Find(filter).FirstOrDefaultAsync();
+            var response = _mapper.Map<MessageGrpc>(document);
 
             var result = await _MessagesCollection.UpdateOneAsync(filter, update);
 
             if (result.IsAcknowledged && result.ModifiedCount > 0)
             {
+                await _rabbitMqService.SendMessage(obj: document, queueList: new List<string> { "FeedbackQueue" });
                 return new ResponseModel<bool> { ResultCode = ResultCode.Success, Data = true };
             }
             else
