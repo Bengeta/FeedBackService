@@ -19,9 +19,11 @@ public class MessageRepository : IMessageRepository
     private readonly UserService _userService;
     private readonly IRabbitMqService _rabbitMqService;
     private readonly IMapper _mapper;
+    private readonly ILogger<MessageRepository> _logger;
 
-    public MessageRepository(IMongoDatabase database, IMapper mapper, ServicesGrpc.ServiceSent.OrderService orderService, UserService userService)
+    public MessageRepository(IMongoDatabase database, ILogger<MessageRepository> logger, IMapper mapper, ServicesGrpc.ServiceSent.OrderService orderService, UserService userService)
     {
+        _logger = logger;
         _orderService = orderService;
         _userService = userService;
         _mapper = mapper;
@@ -34,13 +36,16 @@ public class MessageRepository : IMessageRepository
         {
             var userResponse = await _userService.GetGetUserByToken(token);
             if (userResponse.ResultCode != ResultCode.Success)
+            {
+                _logger.LogError("Error in GetAllMessagesAsync in MessageRepository - User not found");
                 return new ResponseModel<PaginatedListModel<MessageResponse>> { ResultCode = ResultCode.UserNotFound };
+            }
             var filter = Builders<MessageModel>.Filter.Eq(x => x.UserId, userResponse.Data.Id);
             return await GetMessages(filter, page, pageSize);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError("Error in GetAllMessagesAsync in MessageRepository \n" + e.Message);
             return new ResponseModel<PaginatedListModel<MessageResponse>> { ResultCode = ResultCode.Failed };
         }
     }
@@ -53,7 +58,7 @@ public class MessageRepository : IMessageRepository
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError("Error in GetAllMessagesAsync in MessageRepository \n" + e.Message);
             return new ResponseModel<PaginatedListModel<MessageResponse>> { ResultCode = ResultCode.Failed };
         }
     }
@@ -64,7 +69,10 @@ public class MessageRepository : IMessageRepository
         {
             var documents = await _MessagesCollection.Find(filter).ToListAsync();
             if (documents == null)
+            {
+                _logger.LogError("Error in GetMessages in MessageRepository - No messages found");
                 return new ResponseModel<PaginatedListModel<MessageResponse>> { ResultCode = ResultCode.Failed };
+            }
 
             var documentsMapped = _mapper.Map<List<MessageResponse>>(documents);
             var documentsPagged = PagedList<MessageResponse>.ToPagedList(documentsMapped, page, pageSize);
@@ -73,7 +81,7 @@ public class MessageRepository : IMessageRepository
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError("Error in GetMessages in MessageRepository \n" + e.Message);
             return new ResponseModel<PaginatedListModel<MessageResponse>> { ResultCode = ResultCode.Failed };
         }
     }
@@ -84,7 +92,10 @@ public class MessageRepository : IMessageRepository
         {
             var userResponse = await _userService.GetGetUserByToken(token);
             if (userResponse.ResultCode != ResultCode.Success)
+            {
+                _logger.LogError("Error in GetAllMessagesAsync in MessageRepository - User not found");
                 return new ResponseModel<MessageResponse> { ResultCode = ResultCode.UserNotFound };
+            }
             var filter = Builders<MessageModel>.Filter.And(
                 Builders<MessageModel>.Filter.Eq(x => x.UserId, userResponse.Data.Id),
                 Builders<MessageModel>.Filter.Eq(x => x.Id, id)
@@ -94,7 +105,7 @@ public class MessageRepository : IMessageRepository
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError("Error in GetMessageAsync in MessageRepository \n" + e.Message);
             return new ResponseModel<MessageResponse> { ResultCode = ResultCode.Failed };
         }
     }
@@ -109,7 +120,7 @@ public class MessageRepository : IMessageRepository
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError("Error in GetMessageAsync in MessageRepository \n" + e.Message);
             return new ResponseModel<MessageResponse> { ResultCode = ResultCode.Failed };
         }
     }
@@ -120,14 +131,17 @@ public class MessageRepository : IMessageRepository
         {
             var document = await _MessagesCollection.Find(filter).FirstOrDefaultAsync();
             if (document == null)
+            {
+                _logger.LogError("Error in GetMessages in MessageRepository - No messages found");
                 return new ResponseModel<MessageResponse> { ResultCode = ResultCode.Failed };
+            }
 
             var response = _mapper.Map<MessageResponse>(document);
             return new ResponseModel<MessageResponse> { ResultCode = ResultCode.Success, Data = response };
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError("Error in GetMessage in MessageRepository \n" + e.Message);
             return new ResponseModel<MessageResponse> { ResultCode = ResultCode.Failed };
         }
     }
@@ -139,14 +153,17 @@ public class MessageRepository : IMessageRepository
         {
             var userResponse = await _userService.GetGetUserByToken(token);
             if (userResponse.ResultCode != ResultCode.Success)
+            {
+                _logger.LogError("Error in GetAllMessagesAsync in MessageRepository - User not found");
                 return new ResponseModel<bool> { ResultCode = ResultCode.UserNotFound };
+            }
             var MessageModel = new MessageModel { UserId = userResponse.Data.Id, Message = request.Message, Title = request.Title };
             await _MessagesCollection.InsertOneAsync(MessageModel);
             return new ResponseModel<bool> { ResultCode = ResultCode.Success, Data = true };
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError("Error in AddMessageAsync in MessageRepository \n" + e.Message);
             return new ResponseModel<bool> { ResultCode = ResultCode.Failed };
         }
     }
@@ -159,7 +176,7 @@ public class MessageRepository : IMessageRepository
             if (messageResponse.ResultCode != ResultCode.Success)
                 return new ResponseModel<bool> { ResultCode = ResultCode.Failed };
 
-            var filter = Builders<MessageModel>.Filter.Eq(x => x.Id, request.Id);            
+            var filter = Builders<MessageModel>.Filter.Eq(x => x.Id, request.Id);
             var update = Builders<MessageModel>.Update.Set(x => x.Answer, request.Answer);
 
             var document = await _MessagesCollection.Find(filter).FirstOrDefaultAsync();
@@ -180,7 +197,7 @@ public class MessageRepository : IMessageRepository
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError("Error in UpdateMessageAsync in MessageRepository \n" + e.Message);
             return new ResponseModel<bool> { ResultCode = ResultCode.Failed };
         }
     }

@@ -9,10 +9,12 @@ public class OrderService
     private string host = "bucket-api";
     private string port = "5230";
     private string adress;
+    private ILogger<OrderService> _logger;
 
-    public OrderService()
+    public OrderService(ILogger<OrderService> logger)
     {
         adress = "http://" + host + ":" + port;
+        _logger = logger;
     }
 
     public async Task<ResponseModel<OrderResponseGrpc>> GetOrderById(long id)
@@ -36,7 +38,7 @@ public class OrderService
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
+            _logger.LogError("Error in GetOrderById in OrderService \n" + e.Message);
             return new ResponseModel<OrderResponseGrpc>
             {
                 ResultCode = ResultCode.Failed,

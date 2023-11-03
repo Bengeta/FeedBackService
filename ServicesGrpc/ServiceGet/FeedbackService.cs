@@ -31,7 +31,7 @@ public class FeedbackService : FeedBack.FeedBackBase
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError("Error in GetMessage in FeedbackServiceGrpc " + e.Message);
             return new GetMessageResponseGrpc() { Success = false };
         }
     }
@@ -53,7 +53,7 @@ public class FeedbackService : FeedBack.FeedBackBase
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError("Error in GetMessages in FeedbackServiceGrpc " + e.Message);
             return new GetMessagesResponseGrpc() { Success = false };
         }
     }
@@ -66,13 +66,13 @@ public class FeedbackService : FeedBack.FeedBackBase
 
             var response = await _messageRepository.UpdateMessageAsync(request);
             if (response.ResultCode == ResultCode.Success)
-                return new AddAnswerResponseGrpc() { Success = true};
+                return new AddAnswerResponseGrpc() { Success = true };
 
             return new AddAnswerResponseGrpc() { Success = false };
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError("Error in AddAnswer in FeedbackServiceGrpc " + e.Message);
             return new AddAnswerResponseGrpc() { Success = false };
         }
     }

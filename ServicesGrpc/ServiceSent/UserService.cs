@@ -11,10 +11,12 @@ public class UserService
     private string host = "api";
     private string port = "5002";
     private string adress;
+    private ILogger<UserService> _logger;
 
-    public UserService()
+    public UserService(ILogger<UserService> logger)
     {
         adress = "http://" + host + ":" + port;
+        _logger = logger;
     }
 
     public async Task<ResponseModel<UserResponseGrpc>> GetGetUserByToken(string token)
@@ -34,7 +36,7 @@ public class UserService
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
+            _logger.LogError("Error in GetGetUserByToken in UserServiceGrpc \n" + e.Message);
             return new ResponseModel<UserResponseGrpc>
             {
                 ResultCode = ResultCode.Failed,
@@ -60,7 +62,7 @@ public class UserService
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
+            _logger.LogError("Error in GetUserById in UserServiceGrpc \n" + e.Message);
             return new ResponseModel<UserResponseGrpc>
             {
                 ResultCode = ResultCode.Failed,
