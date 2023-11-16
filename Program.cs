@@ -2,6 +2,8 @@ using System.Net;
 using System.Reflection;
 using GrpcService.ServiceGet;
 using HessBackend.Middlewares;
+using HessLibrary.Interfaces;
+using HessLibrary.Repositories;
 using HessLibrary.Utils;
 using Interfaces;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -39,6 +41,7 @@ services.AddSingleton<IMongoClient>(client);
 services.AddSingleton<IMongoDatabase>(database);
 services.AddSingleton<IMessageRepository, MessageRepository>();
 builder.Services.AddSingleton<UserService>();
+builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
 builder.Services.AddSingleton<ServicesGrpc.ServiceSent.OrderService>();
 
 builder.Services.AddAutoMapper(typeof(Feedback.Utils.AutoMappingProfiles).Assembly, typeof(HessLibrary.Utils.AutoMappingProfiles).Assembly);
@@ -115,7 +118,7 @@ ElasticsearchSinkOptions ConfigureElasticSerach(IConfigurationRoot configuration
     {
         AutoRegisterTemplate = true,
         IndexFormat = $"{Assembly.GetExecutingAssembly().GetName().Name.ToLower().Replace(".", "-")}-{enviroment.ToLower()}-{DateTime.UtcNow:yyyy-MM-dd}",
-        NumberOfReplicas = 1,
-        NumberOfShards = 2,
+        NumberOfReplicas = 0,
+        NumberOfShards = 0,
     };
 }

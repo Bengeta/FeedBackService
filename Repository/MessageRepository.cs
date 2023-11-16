@@ -21,12 +21,13 @@ public class MessageRepository : IMessageRepository
     private readonly IMapper _mapper;
     private readonly ILogger<MessageRepository> _logger;
 
-    public MessageRepository(IMongoDatabase database, ILogger<MessageRepository> logger, IMapper mapper, ServicesGrpc.ServiceSent.OrderService orderService, UserService userService)
+    public MessageRepository(IMongoDatabase database,IRabbitMqService rabbitMqService, ILogger<MessageRepository> logger, IMapper mapper, ServicesGrpc.ServiceSent.OrderService orderService, UserService userService)
     {
         _logger = logger;
         _orderService = orderService;
         _userService = userService;
         _mapper = mapper;
+        _rabbitMqService = rabbitMqService;
         _MessagesCollection = database.GetCollection<MessageModel>("messages");
     }
 
@@ -179,8 +180,13 @@ public class MessageRepository : IMessageRepository
             var filter = Builders<MessageModel>.Filter.Eq(x => x.Id, request.Id);
             var update = Builders<MessageModel>.Update.Set(x => x.Answer, request.Answer);
 
+            _logger.LogInformation("Id - " + request.Id);
             var document = await _MessagesCollection.Find(filter).FirstOrDefaultAsync();
-            var response = _mapper.Map<MessageGrpc>(document);
+            if (document == null)
+            {
+                _logger.LogError("Error in UpdateMessageAsync in MessageRepository - No messages found");
+                return new ResponseModel<bool> { ResultCode = ResultCode.Failed };
+            }
 
             var result = await _MessagesCollection.UpdateOneAsync(filter, update);
 
