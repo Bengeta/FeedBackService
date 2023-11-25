@@ -9,3 +9,4 @@ riderModule.iml
 appsettings.Development.json
 .env
 docker-compose-common.yml
+data/appsettings.json

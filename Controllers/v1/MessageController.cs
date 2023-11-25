@@ -1,8 +1,9 @@
 using Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Models;
+using HessLibrary.Models;
 using Models.DBTables;
 using Requests;
+using Responses;
 
 namespace Controllers.v1;
 [ApiController]
@@ -18,13 +19,13 @@ public class MessageController : BaseController
 
     [HttpGet]
     [Route("messages")]
-    public async Task<ResponseModel<List<MessageModel>>> GetMessages()
+    public async Task<ResponseModel<PaginatedListModel<MessageResponse>>> GetMessages([FromQuery(Name = "page")] int page, [FromQuery(Name = "pageSize")] int pageSize)
     {
-        return await _messageRepository.GetAllMessagesAsync(Token());
+        return await _messageRepository.GetAllMessagesAsync(Token(), page, pageSize);
     }
     [HttpGet]
     [Route("messages/{id}")]
-    public async Task<ResponseModel<MessageModel>> GetMessage(string id)
+    public async Task<ResponseModel<MessageResponse>> GetMessage(string id)
     {
         return await _messageRepository.GetMessageAsync(Token(), id);
     }

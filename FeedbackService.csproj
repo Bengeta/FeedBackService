@@ -6,7 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
-    
+
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect"
@@ -17,23 +17,41 @@
         <PackageReference Include="MongoDB.Driver" Version="2.19.1" />
         <PackageReference Include="NPOI" Version="2.6.0" />
         <PackageReference Include="RabbitMQ.Client" Version="6.5.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
         <PackageReference Include="Grpc.Net.Client" Version="2.52.0" />
         <PackageReference Include="Google.Protobuf" Version="3.22.1" />
         <PackageReference Include="Grpc.AspNetCore" Version="2.52.0" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
+
+        <PackageReference Include="AutoMapper" Version="12.0.1" />
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection"
+            Version="12.0.0" />
+        <PackageReference Include="Polly" Version="7.2.3" />
+
+
+        <PackageReference Include="Serilog" Version="3.0.1" />
+        <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
+        <PackageReference Include="Serilog.Enrichers.Environment" Version="2.3.0" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+        <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="9.0.3" />
+        <PackageReference Include="Serilog.Sinks.Seq" Version="5.2.3" />
+        <PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
+        <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
     </ItemGroup>
 
-    <ItemGroup>
-        <Protobuf Include="Protos\order.proto" GrpcServices="Client" />
-        <Protobuf Include="Protos\user.proto" GrpcServices="Client" />
-    </ItemGroup>
 
     <ItemGroup>
         <Content Include="..\.dockerignore">
             <Link>.dockerignore</Link>
         </Content>
     </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="HessLibrary">
+            <HintPath>mylib/HessLibrary.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
 
 </Project>

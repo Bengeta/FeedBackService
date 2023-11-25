@@ -1,8 +1,8 @@
 using Grpc.Core;
 using Grpc.Net.Client;
-using User;
-using Models;
-using HessBackend.Enums;
+using HessLibrary.Models;
+using HessLibrary.Enums;
+using HessLibrary.UserServiceGrpc;
 
 namespace ServicesGrpc.ServiceSent;
 
@@ -11,10 +11,12 @@ public class UserService
     private string host = "api";
     private string port = "5002";
     private string adress;
+    private ILogger<UserService> _logger;
 
-    public UserService()
+    public UserService(ILogger<UserService> logger)
     {
         adress = "http://" + host + ":" + port;
+        _logger = logger;
     }
 
     public async Task<ResponseModel<UserResponseGrpc>> GetGetUserByToken(string token)
@@ -22,9 +24,9 @@ public class UserService
         try
         {
             var channel = GrpcChannel.ForAddress(adress);
-            var client = new User.User.UserClient(channel);
+            var client = new User.UserClient(channel);
 
-            var call = await client.GetUserAsync(new User.GetUserByTokenGrpc { Token = token }
+            var call = await client.GetUserAsync(new GetUserByTokenGrpc { Token = token }
                 , deadline: DateTime.UtcNow.AddMinutes(1)
             );
             if (call != null)
@@ -34,7 +36,7 @@ public class UserService
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
+            _logger.LogError("Error in GetGetUserByToken in UserServiceGrpc \n" + e.Message);
             return new ResponseModel<UserResponseGrpc>
             {
                 ResultCode = ResultCode.Failed,
@@ -48,9 +50,9 @@ public class UserService
         try
         {
             var channel = GrpcChannel.ForAddress(adress);
-            var client = new User.User.UserClient(channel);
+            var client = new User.UserClient(channel);
 
-            var call = await client.GetUserByIdAsync(new User.GetUserByIdGrpc { Id = id }
+            var call = await client.GetUserByIdAsync(new GetUserByIdGrpc { Id = id }
                 , deadline: DateTime.UtcNow.AddMinutes(1)
             );
             if (call != null)
@@ -60,7 +62,7 @@ public class UserService
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
+            _logger.LogError("Error in GetUserById in UserServiceGrpc \n" + e.Message);
             return new ResponseModel<UserResponseGrpc>
             {
                 ResultCode = ResultCode.Failed,
